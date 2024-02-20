@@ -11,6 +11,16 @@ authors = [
 description = "A package for computing entropy-based diversity measures on image sets"
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = [
+  "torch",
+  "ftfy",
+  "regex",
+  "tqdm",
+  "scikit-image",
+  "clip@git+https://github.com/openai/CLIP.git",
+  "scikit-image"
+]
+
 
 [project.urls]
 Homepage = "https://github.com/fibarrola/image_diversity"
