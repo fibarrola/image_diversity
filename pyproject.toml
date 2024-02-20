@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image_diversity"
+version = "0.0.1"
+authors = [
+  { name="Francisco Ibarrola", email="francisco.ibarrola@outlook.com"},
+]
+description = "A package for computing entropy-based diversity measures on image sets"
+readme = "README.md"
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/fibarrola/image_diversity"
