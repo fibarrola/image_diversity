@@ -1,34 +1,46 @@
-import clip
 import torch
 import os
 from PIL import Image
+from torchvision import transforms
 from scipy import linalg
+from src.inception import InceptionV3
 
 
-class DivClip:
-    def __init__(self, device=None, n_eigs=15):
+class DivInception:
+    def __init__(self, out_dim=2048, device=None, n_eigs=15):
         if device is None:
             self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
             print(f"Device set as: {self.device}")
 
-        self.clip_model, self.preprocess = clip.load("ViT-B/32", device=self.device)
+        self.preprocess = transforms.Compose(
+            [
+                transforms.Resize(299),
+                transforms.CenterCrop(299),
+                transforms.ToTensor(),
+            ]
+        )
+        self.out_dim = out_dim
+        net_idx = InceptionV3.BLOCK_INDEX_BY_DIM[out_dim]
+        self.inception_model = InceptionV3([net_idx]).to(self.device)
+        self.inception_model.eval()
         self.n_eigs = n_eigs
 
     @torch.no_grad()
     def encode(self, img_names, img_dir):
-        zz = torch.empty((len(img_names), 512), device=self.device)
+        # BATCH THIS
+        zz = torch.empty((len(img_names), self.out_dim), device=self.device)
         for i, img_name in enumerate(img_names):
             image = (
                 self.preprocess(Image.open(f"{img_dir}/{img_name}"))
                 .unsqueeze(0)
                 .to(self.device)
             )
-            zz[i, :] = self.clip_model.encode_image(image)
+            zz[i, :] = self.inception_model(image)[0].squeeze(3).squeeze(2)
 
         return zz
 
     @torch.no_grad()
-    def tcd(self, img_dir, img_names=None):
+    def tie(self, img_dir, img_names=None):
         if img_names is None:
             img_names = os.listdir(img_dir)
         assert self.n_eigs < len(
