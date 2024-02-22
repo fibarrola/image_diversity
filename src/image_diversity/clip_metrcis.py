@@ -5,7 +5,7 @@ from PIL import Image
 from scipy import linalg
 
 
-class DivClip:
+class ClipMetrics:
     def __init__(self, device=None, n_eigs=15):
         if device is None:
             self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -50,7 +50,7 @@ class DivClip:
         return output
 
     @torch.no_grad()
-    def compute_dist(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
+    def fcd(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
         if img_names1 is None:
             img_names1 = os.listdir(img_dir1)
         if img_names2 is None:

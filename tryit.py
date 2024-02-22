@@ -1,7 +1,7 @@
-from image_diversity.clip_metrcis import DivClip
-from image_diversity.inception_metrics import DivInception
+from image_diversity.clip_metrcis import ClipMetrics
+from image_diversity.inception_metrics import InceptionMetrics
 
-div_clip = DivClip()
-div_inception = DivInception()
+div_clip = ClipMetrics()
+div_inception = InceptionMetrics()
 
 print("works")
