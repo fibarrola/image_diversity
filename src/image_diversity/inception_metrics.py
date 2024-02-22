@@ -3,7 +3,7 @@ import os
 from PIL import Image
 from torchvision import transforms
 from scipy import linalg
-from src.inception import InceptionV3
+from .inception import InceptionV3
 
 
 class DivInception:
