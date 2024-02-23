@@ -59,7 +59,9 @@ class ClipMetrics:
             img_names2 = os.listdir(img_dir2)
 
         if len(img_names1) != len(img_names2):
-            warnings.warn("WARNING: to make a fair comparison, both sets should have the same number of images")
+            warnings.warn(
+                "WARNING: to make a fair comparison, both sets should have the same number of images"
+            )
 
         assert self.n_eigs < len(
             img_names1
