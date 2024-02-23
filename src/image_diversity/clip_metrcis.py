@@ -1,6 +1,7 @@
 import clip
 import torch
 import os
+import warnings
 from PIL import Image
 from scipy import linalg
 
@@ -28,7 +29,7 @@ class ClipMetrics:
         return zz
 
     @torch.no_grad()
-    def tcd(self, img_dir, img_names=None):
+    def tce(self, img_dir, img_names=None):
         if img_names is None:
             img_names = os.listdir(img_dir)
         assert self.n_eigs < len(
@@ -51,10 +52,21 @@ class ClipMetrics:
 
     @torch.no_grad()
     def fcd(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
+
         if img_names1 is None:
             img_names1 = os.listdir(img_dir1)
         if img_names2 is None:
             img_names2 = os.listdir(img_dir2)
+
+        if len(img_names1) != len(img_names2):
+            warnings.warn("WARNING: to make a fair comparison, both sets should have the same number of images")
+
+        assert self.n_eigs < len(
+            img_names1
+        ), "The number of eigenvalues for truncation must be smaller than the number of samples"
+        assert self.n_eigs < len(
+            img_names2
+        ), "The number of eigenvalues for truncation must be smaller than the number of samples"
 
         zz1 = self.encode(img_names1, img_dir1)
         zz2 = self.encode(img_names2, img_dir2)
