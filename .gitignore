@@ -3,3 +3,4 @@ build/
 venv/
 dist/
 cheatsheet.txt
+__pycache__/
