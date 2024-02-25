@@ -5,7 +5,6 @@ inception_metrics = InceptionMetrics()
 
 
 class TestClipMetrics:
-
     def test_tcd_negis(self):
         """TCE should not work if the number of eigenvalues is smaller than the number of images"""
         inception_metrics.n_eigs = 5
@@ -15,13 +14,17 @@ class TestClipMetrics:
     def test_tcd_output(self):
         """TCE should produce a positive value"""
         inception_metrics.n_eigs = 2
-        assert inception_metrics.tie("tests/image_set_1") > 0, "TCE value should be positive"
+        assert (
+            inception_metrics.tie("tests/image_set_1") > 0
+        ), "TCE value should be positive"
 
     def test_tcd_subset(self):
         """TCE works with an image subset"""
         inception_metrics.n_eigs = 2
         assert (
-            inception_metrics.tie("tests/image_set_1", ["A_10.png", "A_30.png", "A_50.png"])
+            inception_metrics.tie(
+                "tests/image_set_1", ["A_10.png", "A_30.png", "A_50.png"]
+            )
             > 0
         ), "TCE value should be positive"
 

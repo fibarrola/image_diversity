@@ -52,7 +52,6 @@ class ClipMetrics:
 
     @torch.no_grad()
     def fcd(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
-
         if img_names1 is None:
             img_names1 = os.listdir(img_dir1)
         if img_names2 is None:

@@ -5,7 +5,6 @@ clip_metrics = ClipMetrics()
 
 
 class TestClipMetrics:
-
     def test_tcd_negis(self):
         """TCE should not work if the number of eigenvalues is smaller than the number of images"""
         clip_metrics.n_eigs = 5
