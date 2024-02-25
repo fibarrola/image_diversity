@@ -1,5 +1,6 @@
 import torch
 import os
+import warnings
 from PIL import Image
 from torchvision import transforms
 from scipy import linalg
@@ -67,6 +68,18 @@ class InceptionMetrics:
             img_names1 = os.listdir(img_dir1)
         if img_names2 is None:
             img_names2 = os.listdir(img_dir2)
+
+        if len(img_names1) != len(img_names2):
+            warnings.warn(
+                "WARNING: to make a fair comparison, both sets should have the same number of images"
+            )
+
+        assert self.n_eigs < len(
+            img_names1
+        ), "The number of eigenvalues for truncation must be smaller than the number of samples"
+        assert self.n_eigs < len(
+            img_names2
+        ), "The number of eigenvalues for truncation must be smaller than the number of samples"
 
         zz1 = self.encode(img_names1, img_dir1)
         zz2 = self.encode(img_names2, img_dir2)

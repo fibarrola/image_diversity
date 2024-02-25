@@ -1,47 +1,51 @@
-from image_diversity import ClipMetrics
+from image_diversity import InceptionMetrics
 import pytest
 
-clip_metrics = ClipMetrics()
+inception_metrics = InceptionMetrics()
 
 
 class TestClipMetrics:
     def test_tcd_negis(self):
         """TCE should not work if the number of eigenvalues is smaller than the number of images"""
-        clip_metrics.n_eigs = 5
+        inception_metrics.n_eigs = 5
         with pytest.raises(AssertionError):
-            clip_metrics.tce("tests/image_set_1")
+            inception_metrics.tie("tests/image_set_1")
 
     def test_tcd_output(self):
         """TCE should produce a positive value"""
-        clip_metrics.n_eigs = 2
-        assert clip_metrics.tce("tests/image_set_1") > 0, "TCE value should be positive"
+        inception_metrics.n_eigs = 2
+        assert (
+            inception_metrics.tie("tests/image_set_1") > 0
+        ), "TCE value should be positive"
 
     def test_tcd_subset(self):
         """TCE works with an image subset"""
-        clip_metrics.n_eigs = 2
+        inception_metrics.n_eigs = 2
         assert (
-            clip_metrics.tce("tests/image_set_1", ["A_10.png", "A_30.png", "A_50.png"])
+            inception_metrics.tie(
+                "tests/image_set_1", ["A_10.png", "A_30.png", "A_50.png"]
+            )
             > 0
         ), "TCE value should be positive"
 
     def test_fcd_negis(self):
         """FCD should not work if the number of eigenvalues is smaller than the number of images"""
-        clip_metrics.n_eigs = 5
+        inception_metrics.n_eigs = 5
         with pytest.raises(AssertionError):
-            clip_metrics.fcd("tests/image_set_1", "tests/image_set_2")
+            inception_metrics.fid("tests/image_set_1", "tests/image_set_2")
 
     def test_fcd_output(self):
         """FCD should not work if the number of eigenvalues is smaller than the number of images"""
-        clip_metrics.n_eigs = 2
+        inception_metrics.n_eigs = 2
         assert (
-            clip_metrics.fcd("tests/image_set_1", "tests/image_set_2") > 0
+            inception_metrics.fid("tests/image_set_1", "tests/image_set_2") > 0
         ), "FCD value should be positive"
 
     def test_fcd_diff_subsets(self):
         """Warning should be raised if FCD is comparing sets of different sizes"""
-        clip_metrics.n_eigs = 1
+        inception_metrics.n_eigs = 1
         with pytest.warns(Warning):
-            clip_metrics.fcd(
+            inception_metrics.fid(
                 "tests/image_set_1",
                 "tests/image_set_2",
                 ["A_10.png", "A_30.png", "A_50.png"],
@@ -50,9 +54,9 @@ class TestClipMetrics:
 
     def test_fcd_subsets(self):
         """FCD should produce a positive value"""
-        clip_metrics.n_eigs = 2
+        inception_metrics.n_eigs = 2
         assert (
-            clip_metrics.fcd(
+            inception_metrics.fid(
                 "tests/image_set_1",
                 "tests/image_set_2",
                 ["A_10.png", "A_30.png", "A_50.png"],
