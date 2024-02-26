@@ -18,7 +18,6 @@ dependencies = [
   "regex",
   "tqdm",
   "scipy",
-  "clip@git+https://github.com/openai/CLIP.git",
 ]
 
 
