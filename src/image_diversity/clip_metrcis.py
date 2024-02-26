@@ -4,6 +4,7 @@ import os
 import warnings
 from PIL import Image
 from scipy import linalg
+from .utils import get_img_names
 
 
 class ClipMetrics:
@@ -31,7 +32,7 @@ class ClipMetrics:
     @torch.no_grad()
     def tce(self, img_dir, img_names=None):
         if img_names is None:
-            img_names = os.listdir(img_dir)
+            img_names = get_img_names(img_dir)
         assert self.n_eigs < len(
             img_names
         ), "The number of eigenvalues for truncation must be smaller than the number of samples"
@@ -53,9 +54,9 @@ class ClipMetrics:
     @torch.no_grad()
     def fcd(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
         if img_names1 is None:
-            img_names1 = os.listdir(img_dir1)
+            img_names1 = get_img_names(img_dir1)
         if img_names2 is None:
-            img_names2 = os.listdir(img_dir2)
+            img_names2 = get_img_names(img_dir2)
 
         if len(img_names1) != len(img_names2):
             warnings.warn(
