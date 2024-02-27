@@ -1,4 +1,4 @@
-import clip
+from .clip import clip
 import torch
 import os
 import warnings

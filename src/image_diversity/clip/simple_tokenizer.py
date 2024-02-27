@@ -63,6 +63,8 @@ class SimpleTokenizer(object):
     def __init__(self, bpe_path: str = default_bpe()):
         self.byte_encoder = bytes_to_unicode()
         self.byte_decoder = {v: k for k, v in self.byte_encoder.items()}
+        this_dir, this_filename = os.path.split(__file__)
+        print(this_dir)
         merges = gzip.open(bpe_path).read().decode("utf-8").split('\n')
         merges = merges[1:49152-256-2+1]
         merges = [tuple(merge.split()) for merge in merges]
