@@ -1,6 +1,5 @@
 from .clip import clip
 import torch
-import os
 import warnings
 from PIL import Image
 from scipy import linalg
