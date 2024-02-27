@@ -1,5 +1,4 @@
 import torch
-import os
 import warnings
 from PIL import Image
 from torchvision import transforms

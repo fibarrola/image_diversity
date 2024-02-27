@@ -1,0 +1,1 @@
+include src/image_diversity/clip/bpe_simple_vocab_16e6.txt.gz
