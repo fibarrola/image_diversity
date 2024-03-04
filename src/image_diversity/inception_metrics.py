@@ -1,6 +1,5 @@
 import torch
 import warnings
-from PIL import Image
 from torchvision import transforms
 from scipy import linalg
 from .utils import get_img_names, ImgDataset
@@ -9,17 +8,13 @@ from .inception import InceptionV3
 
 
 class InceptionMetrics:
-    def __init__(self, out_dim=2048, device=None, n_eigs=15):
+    def __init__(self, out_dim=2048, device=None, n_eigs=20):
         if device is None:
             self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
             print(f"Device set as: {self.device}")
 
         self.preprocess = transforms.Compose(
-            [
-                transforms.Resize(299),
-                transforms.CenterCrop(299),
-                transforms.ToTensor(),
-            ]
+            [transforms.Resize(299), transforms.CenterCrop(299), transforms.ToTensor()]
         )
         self.out_dim = out_dim
         net_idx = InceptionV3.BLOCK_INDEX_BY_DIM[out_dim]
@@ -29,13 +24,17 @@ class InceptionMetrics:
 
     @torch.no_grad()
     def encode(self, img_names, img_dir, batch_size):
-        dataset = ImgDataset(img_names=img_names, img_dir=img_dir, transforms = self.preprocess)
+        dataset = ImgDataset(
+            img_names=img_names, img_dir=img_dir, transforms=self.preprocess
+        )
         data_loader = DataLoader(dataset=dataset, batch_size=batch_size)
         zz = torch.empty((len(img_names), self.out_dim), device=self.device)
         k = 0
         for batch in data_loader:
             batch = batch.to(self.device)
-            zz[k:k+batch.shape[0], :] = self.inception_model(batch)[0].squeeze(3).squeeze(2)
+            zz[k : k + batch.shape[0], :] = (
+                self.inception_model(batch)[0].squeeze(3).squeeze(2)
+            )
             k += batch.shape[0]
 
         return zz

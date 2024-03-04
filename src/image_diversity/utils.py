@@ -1,6 +1,6 @@
 import imghdr
 import os
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from PIL import Image
 
 VALID_IMG_FORMATS = ["jpeg", "png", "gif", "bmp", "tiff"]

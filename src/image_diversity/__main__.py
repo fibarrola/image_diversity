@@ -2,8 +2,6 @@ from argparse import ArgumentParser
 from image_diversity import InceptionMetrics
 from image_diversity import ClipMetrics
 
-from image_diversity.utils import get_img_names
-
 
 parser = ArgumentParser()
 parser.add_argument(

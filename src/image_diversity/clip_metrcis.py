@@ -1,7 +1,6 @@
 from .clip import clip
 import torch
 import warnings
-from PIL import Image
 from scipy import linalg
 from .utils import get_img_names, ImgDataset
 from torch.utils.data import DataLoader
@@ -15,16 +14,16 @@ class ClipMetrics:
 
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=self.device)
         self.n_eigs = n_eigs
-    
+
     @torch.no_grad()
     def encode(self, img_names, img_dir, batch_size):
-        dataset = ImgDataset(img_names=img_names, img_dir=img_dir, transforms = self.preprocess)
+        dataset = ImgDataset(img_names=img_names, img_dir=img_dir, transforms=self.preprocess)
         data_loader = DataLoader(dataset=dataset, batch_size=batch_size)
         zz = torch.empty((len(img_names), 512), device=self.device)
         k = 0
         for batch in data_loader:
             batch = batch.to(self.device)
-            zz[k:k+batch.shape[0], :] = self.clip_model.encode_image(batch)
+            zz[k:k + batch.shape[0], :] = self.clip_model.encode_image(batch)
             k += batch.shape[0]
 
         return zz
