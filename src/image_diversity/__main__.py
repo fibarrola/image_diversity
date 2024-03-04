@@ -25,6 +25,9 @@ parser.add_argument(
     default=20,
     help=('Number of eigenvalues used for computing truncated Entropy'),
 )
+parser.add_argument(
+    '--batch_size', type=int, default=16, help=('Batch size for data loading'),
+)
 
 
 def main():
@@ -32,11 +35,11 @@ def main():
 
     if args.div_type == "TCE":
         clip_metrics = ClipMetrics(device=args.device, n_eigs=args.n_eigs)
-        diversity_score = clip_metrics.tce(args.path)
+        diversity_score = clip_metrics.tce(args.path, batch_size=args.batch_size)
 
     elif args.div_type == "TIE":
         inception_metrics = InceptionMetrics(device=args.device, n_eigs=args.n_eigs)
-        diversity_score = inception_metrics.tie(args.path)
+        diversity_score = inception_metrics.tie(args.path, batch_size=args.batch_size)
 
     print(
         "{div_type} computation finished for {path}... ".format(
