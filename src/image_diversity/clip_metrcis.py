@@ -3,39 +3,40 @@ import torch
 import warnings
 from PIL import Image
 from scipy import linalg
-from .utils import get_img_names
+from .utils import get_img_names, ImgDataset
+from torch.utils.data import DataLoader
 
 
 class ClipMetrics:
-    def __init__(self, device=None, n_eigs=15):
+    def __init__(self, device=None, n_eigs=20):
         if device is None:
             self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
             print(f"Device set as: {self.device}")
 
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=self.device)
         self.n_eigs = n_eigs
-
+    
     @torch.no_grad()
-    def encode(self, img_names, img_dir):
+    def encode(self, img_names, img_dir, batch_size):
+        dataset = ImgDataset(img_names=img_names, img_dir=img_dir, transforms = self.preprocess)
+        data_loader = DataLoader(dataset=dataset, batch_size=batch_size)
         zz = torch.empty((len(img_names), 512), device=self.device)
-        for i, img_name in enumerate(img_names):
-            image = (
-                self.preprocess(Image.open(f"{img_dir}/{img_name}"))
-                .unsqueeze(0)
-                .to(self.device)
-            )
-            zz[i, :] = self.clip_model.encode_image(image)
+        k = 0
+        for batch in data_loader:
+            batch = batch.to(self.device)
+            zz[k:k+batch.shape[0], :] = self.clip_model.encode_image(batch)
+            k += batch.shape[0]
 
         return zz
 
     @torch.no_grad()
-    def tce(self, img_dir, img_names=None):
+    def tce(self, img_dir, img_names=None, batch_size=16):
         if img_names is None:
             img_names = get_img_names(img_dir)
         assert self.n_eigs < len(
             img_names
         ), "The number of eigenvalues for truncation must be smaller than the number of samples"
-        zz = self.encode(img_names, img_dir)
+        zz = self.encode(img_names, img_dir, batch_size=batch_size)
         sigma = torch.cov(torch.t(zz))
         eigvals = torch.linalg.eigvals(sigma)[: self.n_eigs]
         eigvals = torch.real(eigvals)
@@ -51,7 +52,7 @@ class ClipMetrics:
         return output
 
     @torch.no_grad()
-    def fcd(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
+    def fcd(self, img_dir1, img_dir2, img_names1=None, img_names2=None, batch_size=10):
         if img_names1 is None:
             img_names1 = get_img_names(img_dir1)
         if img_names2 is None:
@@ -69,8 +70,8 @@ class ClipMetrics:
             img_names2
         ), "The number of eigenvalues for truncation must be smaller than the number of samples"
 
-        zz1 = self.encode(img_names1, img_dir1)
-        zz2 = self.encode(img_names2, img_dir2)
+        zz1 = self.encode(img_names1, img_dir1, batch_size=batch_size)
+        zz2 = self.encode(img_names2, img_dir2, batch_size=batch_size)
 
         mu_diff = torch.mean(zz1, dim=0) - torch.mean(zz2, dim=0)
         sigma1 = torch.cov(torch.t(zz1)) + 1e-6 * torch.eye(
