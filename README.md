@@ -35,6 +35,7 @@ python3 -m image_diversity <path/to/dir>
 --div_type <str>        Encoding network: TCE (default) or TIE
 --n_eigs <int>          Number of eigenvalues for truncation (default: 20)
 --device <str>          Device to use. Automatic by default
+--batch_size <int>      Batch size for data loading (default: 16)
 ```
 <br>
 
