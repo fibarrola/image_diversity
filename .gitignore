@@ -5,3 +5,4 @@ dist/
 cheatsheet.txt
 __pycache__/
 try.py
+test_local*
