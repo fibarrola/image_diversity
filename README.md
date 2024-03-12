@@ -6,10 +6,10 @@ Assess a set of image's diversity by computing an approximation of the Entropy o
 
 ## Installation
 
-Install from [test.pypi](https://test.pypi.org/project/image-diversity/):
+Install from [pypi](https://pypi.org/project/image-diversity/)):
 
 ```
-pip install -i https://test.pypi.org/simple/ image-diversity
+pip install image-diversity
 ```
 
 <br>
