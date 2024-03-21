@@ -58,3 +58,9 @@ inception_metrics = InceptionMetrics()
 tie = inception_metrics.tie("path/to/img/dir")
 ```
 <br>
+<br>
+<br>
+
+Inception implementation based on [pytorch-fid](https://github.com/mseitzer/pytorch-fid)
+
+CLIP implementation based on [CLIP](https://github.com/openai/CLIP)
