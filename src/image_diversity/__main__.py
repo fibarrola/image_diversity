@@ -26,7 +26,10 @@ parser.add_argument(
     help=('Number of eigenvalues used for computing truncated Entropy'),
 )
 parser.add_argument(
-    '--batch_size', type=int, default=16, help=('Batch size for data loading'),
+    '--batch_size',
+    type=int,
+    default=16,
+    help=('Batch size for data loading'),
 )
 
 

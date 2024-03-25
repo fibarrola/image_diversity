@@ -27,7 +27,7 @@ class ImgDataset(Dataset):
 
     def __getitem__(self, i):
         img_name = self.img_names[i]
-        img = Image.open(os.path.join(self.img_dir,img_name))
+        img = Image.open(os.path.join(self.img_dir, img_name))
         if self.transforms is not None:
             img = self.transforms(img)
         return img
