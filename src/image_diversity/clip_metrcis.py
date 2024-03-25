@@ -37,7 +37,7 @@ class ClipMetrics:
         ), "The number of eigenvalues for truncation must be smaller than the number of samples"
         zz = self.encode(img_names, img_dir, batch_size=batch_size)
         sigma = torch.cov(torch.t(zz))
-        eigvals = torch.linalg.eigvals(sigma)[: self.n_eigs]
+        eigvals, _ = torch.lobpcg(sigma, k=self.n_eigs)
         eigvals = torch.real(eigvals)
         return self.truncated_entropy(eigvals).item()
 

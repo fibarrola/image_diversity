@@ -48,7 +48,7 @@ class InceptionMetrics:
         ), "The number of eigenvalues for truncation must be smaller than the number of samples"
         zz = self.encode(img_names, img_dir, batch_size=batch_size)
         sigma = torch.cov(torch.t(zz))
-        eigvals = torch.linalg.eigvals(sigma)[: self.n_eigs]
+        eigvals, _ = torch.lobpcg(sigma, k=self.n_eigs)
         eigvals = torch.real(eigvals)
         return self.truncated_entropy(eigvals).item()
 
@@ -62,7 +62,7 @@ class InceptionMetrics:
         return output
 
     @torch.no_grad()
-    def fid(self, img_dir1, img_dir2, img_names1=None, img_names2=None):
+    def fid(self, img_dir1, img_dir2, img_names1=None, img_names2=None, batch_size=16):
         if img_names1 is None:
             img_names1 = get_img_names(img_dir1)
         if img_names2 is None:
@@ -80,8 +80,8 @@ class InceptionMetrics:
             img_names2
         ), "The number of eigenvalues for truncation must be smaller than the number of samples"
 
-        zz1 = self.encode(img_names1, img_dir1)
-        zz2 = self.encode(img_names2, img_dir2)
+        zz1 = self.encode(img_names1, img_dir1, batch_size=batch_size)
+        zz2 = self.encode(img_names2, img_dir2, batch_size=batch_size)
 
         mu_diff = torch.mean(zz1, dim=0) - torch.mean(zz2, dim=0)
         sigma1 = torch.cov(torch.t(zz1)) + 1e-6 * torch.eye(
